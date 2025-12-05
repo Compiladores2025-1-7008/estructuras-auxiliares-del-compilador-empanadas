@@ -1,0 +1,49 @@
+name: CI - Pruebas Automatizadas
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Clonar repositorio
+      uses: actions/checkout@v3
+      with:
+        submodules: recursive
+    
+    - name: Instalar dependencias
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y g++ cmake make
+    
+    - name: Configurar GoogleTest
+      run: |
+        if [ ! -d "external/googletest" ]; then
+          mkdir -p external
+          cd external
+          git clone https://github.com/google/googletest.git
+        fi
+        mkdir -p external/googletest/build
+        cd external/googletest/build
+        cmake ..
+        make
+    
+    - name: Compilar proyecto
+      run: make
+    
+    - name: Ejecutar pruebas
+      run: ./runTests
+    
+    - name: Verificar resultados
+      run: |
+        if [ $? -eq 0 ]; then
+          echo "Todas las pruebas pasaron correctamente"
+        else
+          echo "Las pruebas fallaron"
+          exit 1
+        fi

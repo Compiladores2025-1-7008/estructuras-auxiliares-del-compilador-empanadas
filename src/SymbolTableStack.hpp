@@ -1,27 +1,31 @@
 #pragma once
 #include <vector>
 #include <memory>
-#include "symbol_table.hpp"
+#include "SymbolTable.hpp"
 
+// Clase que implementa una pila de tablas de símbolos
+// Permite gestionar ámbitos anidados (scopes) en el programa
+// La base de la pila representa el ámbito global
+// El tope representa el ámbito local actual
 class SymbolTableStack {
 private:
-    std::vector<std::unique_ptr<SymbolTable*>> stack;
+    std::vector<std::unique_ptr<SymbolTable>> stack;  // Pila de tablas
 
 public:
-    // Crea nuevo ámbito
+    // Crea un nuevo ámbito y lo coloca en el tope de la pila
     void pushScope();
 
     // Sale de un ámbito
     void popScope();
 
-    //Sale el ámbito y retorna la referencia a la tabla de símbolos en la cima
-    SymbolTable *popSymbolTable();
+    // Sale el ámbito y retorna la referencia a la tabla de símbolos en la cima
+    SymbolTable* popSymbolTable();
 
     // Insertar solo en tope
     bool insertTop(const SymbolEntry &entry);
 
     // Insertar solo en la base (ámbito global)
-    bool insertBase(const SymbolEntry &entry) ;
+    bool insertBase(const SymbolEntry &entry);
 
     // Buscar solo en tope
     SymbolEntry* lookupTop(const std::string &id);

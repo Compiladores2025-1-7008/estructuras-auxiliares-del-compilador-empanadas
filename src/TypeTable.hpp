@@ -4,12 +4,14 @@
 #include <unordered_map>
 #include <optional>
 
-class SymbolTable; // forward
+// Declaración adelantada para evitar dependencia circular
+class SymbolTable;
 
+// Enumeración que define las categorías de tipos soportados
 enum class TypeKind {
-    BASIC,
-    ARRAY,
-    STRUCT
+    BASIC,   // Tipos primitivos: int, float, char, etc.
+    ARRAY,   // Arreglos de tipos base
+    STRUCT   // Estructuras con campos
 };
 
 struct TypeEntry {
@@ -17,7 +19,7 @@ struct TypeEntry {
     TypeKind kind;
     std::string name;
     int size;
-    int elements = 1;
+    int numElements = 1;  // Los tests usan "numElements"
     int baseTypeId = -1;
     SymbolTable* structFields = nullptr;
 };
@@ -28,13 +30,18 @@ private:
     int lastId = 0;
 
 public:
-    // --- Creación de tipos ---
+    // --- Creación de tipos (para compatibilidad con tests) ---
+    int insertType(const std::string& name, int size);  // tipo básico
+    int insertArrayType(const std::string& name, int baseTypeId, int numElements);
+    
+    // --- Creación de tipos (API original) ---
     int addBasicType(const std::string& name, int size);
     int addArrayType(int baseTypeId, int elements);
     int addStructType(const std::string &name, SymbolTable* fields);
 
     // --- Consultas ---
-    const TypeEntry& get(int id) const;
+    TypeEntry getType(int id) const;  // Para tests (devuelve copia)
+    const TypeEntry& get(int id) const;  // API original (devuelve referencia)
 
     int getSize(int id) const;
     int getNumElements(int id) const;

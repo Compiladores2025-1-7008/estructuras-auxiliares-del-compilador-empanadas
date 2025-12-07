@@ -4,19 +4,21 @@
 #include <vector>
 #include <optional>
 
-enum class Category {
-    VAR,
-    CONST,
-    STRUCT,
-    FUNCTION,
-    PARAM
+// Enumeración que define las categorías de símbolos en el programa
+// Permite clasificar cada identificador según su naturaleza
+enum Category {
+    VarCategory,        // Variable común
+    ConstCategory,      // Constante
+    StructCategory,     // Estructura o tipo compuesto
+    FunctionCategory,   // Función o procedimiento
+    ParamCategory       // Parámetro formal de función
 };
 
 struct SymbolEntry {
     std::string id;
     int typeId;
     Category category;
-    int address;
+    int dir;  // address (los tests usan "dir")
     std::vector<int> params;
 };
 
@@ -25,13 +27,22 @@ private:
     std::unordered_map<std::string, SymbolEntry> table;
 
 public:
+    // Insertar con parámetros individuales (para tests)
+    bool insert(const std::string &id, int typeId, Category category, int dir, 
+                const std::vector<int> &params = {});
+    
+    // Insertar con SymbolEntry completo
     bool insert(const SymbolEntry &entry);
+    
+    // Obtener símbolo completo (para tests)
+    std::optional<SymbolEntry> get(const std::string &id) const;
+    
     // -----------------------------------------
     // Consultas individuales simples
     // -----------------------------------------
     int getType(const std::string &id);
 
-    int getAddress(const std::string &id) ;
+    int getAddress(const std::string &id);
 
     Category getCategory(const std::string &id);
 

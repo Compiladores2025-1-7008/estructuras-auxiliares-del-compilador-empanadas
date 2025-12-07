@@ -1,0 +1,15 @@
+# Archivos de compilación
+build/
+runTests
+
+# GoogleTest (se descarga automáticamente)
+external/
+
+# Archivos del sistema
+.DS_Store
+*.swp
+*.swo
+*~
+
+# Visual Studio Code
+.vscode/
